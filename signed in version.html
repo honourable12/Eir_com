@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signed In</title>
+    <!-- Include necessary stylesheets -->
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="chat-ai"></div>
+
+    <!-- Include necessary scripts -->
+    <script src="ChatAi-.js"></script>
+    <script>
+        new ChatAI({
+            container: '.chat-ai',
+            api_key: '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',
+            model: 'gpt-3.5-turbo'
+        });
+
+        // Function to retrieve email from localStorage
+        function getEmail() {
+            return localStorage.getItem('signupEmail');
+        }
+
+        // Function to display signed-up email
+        function displaySignedUpEmail() {
+            const email = getEmail();
+            if (email) {
+                const emailElement = document.createElement('div');
+                emailElement.innerText = 'Signed up email: ' + email;
+                document.body.appendChild(emailElement);
+            }
+        }
+
+        // Call displaySignedUpEmail when the page loads
+        
+    </script>
+</body>
+</html>

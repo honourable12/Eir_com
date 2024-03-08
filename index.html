@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,minimum-scale=1">
+		<title>Chat AI</title>
+		<link href="style.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+        <div class="chat-ai"></div>
+        <script src="ChatAi.js"></script>
+        <script>
+        new ChatAI({
+    container: '.chat-ai',
+    api_key: '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',
+    model: 'gpt-3.5-turbo'
+});
+
+let switchState = false; // Initially, the switch is off
+
+function toggleSwitch() {
+    switchState = !switchState; // Toggle the switch state
+
+    const toggleSwitchElement = document.getElementById('toggleSwitch');
+    toggleSwitchElement.checked = switchState; // Set the state of the checkbox
+
+    const circle = document.querySelector('.circle');
+    const img = document.getElementById('img');
+
+    if (switchState) {
+        circle.style.left = 'calc(100% - 30px)'; // Move circle to the opposite side
+        document.body.classList.add('invert-colors'); // Apply inverted colors
+        img.src = 'doctor-icon-png-66 (1).png'; // Change image source
+    } else {
+        circle.style.left = '4px'; // Move circle back to the initial position
+        document.body.classList.remove('invert-colors'); // Remove inverted colors
+        img.src = 'image.png'; // Change image source back to original
+    }
+}
+function toggleInvertColors() {
+        const body = document.body;
+        body.classList.toggle('inverted'); // Toggle the 'inverted' class on the body element
+
+        const img = document.getElementById('img');
+        if (img.src.includes('image.png')) {
+            img.src = 'doctor-icon-png-66 (1).png';
+        } else {
+            img.src = 'image.png';
+        }
+    }
+
+        </script>
+	</body>
+</html>

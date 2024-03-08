@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Nearest Hospitals and Pharmacies</title>
+</head>
+<body>
+    
+    <div id="nearest-locations"></div>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            const userLatitude = position.coords.latitude;
+            const userLongitude = position.coords.longitude;
+            findNearbyLocations(userLatitude, userLongitude);
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        function findNearbyLocations(userLatitude, userLongitude) {
+            const radius = 5000; // Search radius in meters
+            const overpassQuery = `[out:json];
+                (
+                    node["amenity"="hospital"](around:${radius},${userLatitude},${userLongitude});
+                    way["amenity"="hospital"](around:${radius},${userLatitude},${userLongitude});
+                    relation["amenity"="hospital"](around:${radius},${userLatitude},${userLongitude});
+                    node["amenity"="pharmacy"](around:${radius},${userLatitude},${userLongitude});
+                    way["amenity"="pharmacy"](around:${radius},${userLatitude},${userLongitude});
+                    relation["amenity"="pharmacy"](around:${radius},${userLatitude},${userLongitude});
+                );
+                out;`;
+
+            fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpassQuery)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const locations = data.elements.map(element => ({
+                        type: element.tags.amenity === "hospital" ? "Hospital" : "Pharmacy",
+                        name: element.tags.name || "Unnamed Location",
+                        latitude: element.lat,
+                        longitude: element.lon
+                    }));
+
+                    locations.forEach(location => {
+                        const distance = calculateDistance(userLatitude, userLongitude, location.latitude, location.longitude);
+                        location.distance = distance;
+                    });
+
+                    locations.sort((a, b) => a.distance - b.distance);
+
+                    const nearestLocationsDiv = document.getElementById('nearest-locations');
+                    nearestLocationsDiv.innerHTML = '<h2>Nearest Locations:</h2><ul>';
+
+                    locations.forEach(location => {
+                        const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.name)}&t=k`;
+                        nearestLocationsDiv.innerHTML += `<li><a href="${googleMapsLink}" target="_blank">${location.type}: ${location.name}</a></li>`;
+                    });
+
+                    nearestLocationsDiv.innerHTML += '</ul>';
+                })
+                .catch(error => {
+                    console.error("Error fetching nearby locations:", error);
+                });
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in kilometers
+            const dLat = toRadians(lat2 - lat1);
+            const dLon = toRadians(lon2 - lon1);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c * 1000; // Convert distance to meters
+            return distance;
+        }
+
+        function toRadians(degrees) {
+            return degrees * Math.PI / 180;
+        }
+
+        // Ask for user's location when the page loads
+        getLocation();
+    </script>
+</body>
+</html>

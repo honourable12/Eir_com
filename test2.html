@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle Switch</title>
+<style>
+    /* Styles for the switch */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        border-radius: 17px; /* Half of the height for circle shape */
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        border-radius: 50%; /* Circle shape */
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #797979;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #7c7c7c;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Styles for the circle */
+    .circle {
+        width: 26px;
+        height: 26px;
+        background-color: rgb(87, 88, 104);
+        border-radius: 50%;
+        position: absolute;
+        top: 4px; /* Position in the center vertically */
+        left: 4px; /* Initial position */
+        transition: left 0.4s;
+    }
+</style>
+</head>
+<body>
+
+<div class="switch">
+    <label class="switch">
+        <input type="checkbox" id="toggleSwitch">
+        <span class="slider"></span>
+        <div class="circle"></div> <!-- Circle inside the switch -->
+    </label>
+</div>
+
+<script>
+   
+</script>
+
+</body>
+</html>
